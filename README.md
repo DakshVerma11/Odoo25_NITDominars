@@ -12,6 +12,9 @@
 
 **StackIt** is a minimal question-and-answer platform that supports collaborative learning and structured knowledge sharing. It’s designed to be simple, user-friendly, and focused on the core experience of asking and answering questions within a community.
 
+ <img width="1893" height="871" alt="image" src="https://github.com/user-attachments/assets/47a30415-c731-4d03-b3fd-eb55e9589382" />
+
+
 ---
 
 ## User Roles
