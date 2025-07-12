@@ -1,21 +1,57 @@
-from flask_cors import CORS
+from flask import request, g, jsonify, abort
+import jwt
+from app.models import User
+from flask import current_app
 
-def configure_cors(app):
+def register_auth_middleware(app):
     """
-    Configure CORS settings for the application
+    Register authentication middleware to extract user from JWT
     """
-    # Get CORS settings from config
-    origins = app.config.get('CORS_ORIGINS', '*')
-    
-    # Setup CORS
-    CORS(app, 
-         resources={r"/api/*": {"origins": origins}},
-         supports_credentials=True,
-         allow_headers=[
-             "Content-Type", 
-             "Authorization", 
-             "X-Requested-With",
-             "Accept"
-         ],
-         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-    )
+    @app.before_request
+    def authenticate_request():
+        # Skip auth for OPTIONS requests (CORS preflight)
+        if request.method == 'OPTIONS':
+            return None
+            
+        # Skip auth for public endpoints
+        public_endpoints = [
+            'auth.register', 
+            'auth.login',
+            'questions.list_questions',
+            'questions.get_question',
+            'static'
+        ]
+        
+        if request.endpoint in public_endpoints:
+            return None
+            
+        # Get token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return None  # Let the route handle authentication if needed
+        
+        token = auth_header.split(' ')[1]
+        
+        try:
+            # Decode JWT token
+            payload = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )
+            
+            # Get user from database
+            user = User.query.get(payload['user_id'])
+            
+            if not user:
+                return None
+                
+            if user.banned:
+                return jsonify({"error": "Your account has been banned"}), 403
+            
+            # Set current user in Flask's g object
+            g.user = user
+            
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            # Continue without authenticated user
+            return None
