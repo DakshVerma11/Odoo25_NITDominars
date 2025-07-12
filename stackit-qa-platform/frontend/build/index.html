@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StackIt - Next-Gen Q&A Platform</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>StackIt</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="questions">Questions</a>
+                    <a href="#" class="nav-link" data-page="tags">Tags</a>
+                    <a href="#" class="nav-link" data-page="users">Users</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModal('loginModal')">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('registerModal')">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="btn ask-question-btn pulse" onclick="askQuestion()">
+                    <i class="fas fa-plus"></i> Ask New Question
+                </button>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-filter="newest">
+                            <i class="fas fa-clock"></i> Newest
+                        </button>
+                        <button class="filter-btn" data-filter="unanswered">
+                            <i class="fas fa-question"></i> Unanswered
+                        </button>
+                        <button class="filter-btn dropdown-toggle" data-filter="more">
+                            <i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="moreFilters">
+                            <button class="dropdown-item" data-filter="active">
+                                <i class="fas fa-fire"></i> Active
+                            </button>
+                            <button class="dropdown-item" data-filter="votes">
+                                <i class="fas fa-thumbs-up"></i> Most Votes
+                            </button>
+                            <button class="dropdown-item" data-filter="views">
+                                <i class="fas fa-eye"></i> Most Views
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search questions..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Questions List -->
+            <div class="questions-container" id="questionsContainer">
+                <!-- Questions will be populated by JavaScript -->
+            </div>
+
+            <!-- Question Detail View -->
+            <div id="questionDetail" class="question-detail" style="display: none;">
+                <button onclick="closeDetailView()" class="btn btn-secondary">← Back</button>
+                <div id="questionContent"></div>
+                <div id="answersContainer"></div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Login to StackIt</h2>
+                <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <p class="modal-footer-text">
+                    Don't have an account? <a href="#" onclick="switchModal('loginModal', 'registerModal')">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Join StackIt</h2>
+                <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="registerPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </form>
+                <p class="modal-footer-text">
+                    Already have an account? <a href="#" onclick="switchModal('registerModal', 'loginModal')">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="askQuestion()" title="Ask a Question">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="../js/app.js"></script>
+</body>
+</html>

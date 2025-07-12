@@ -1,0 +1,87 @@
+<div class="answer-card" data-answer-id="${answer.id}">
+    <div class="answer-voting">
+        <button class="vote-button upvote ${answer.user_vote === 'up' ? 'active' : ''}" data-vote="up" data-answer-id="${answer.id}">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 4L4 15h16L12 4z"/>
+            </svg>
+            <span class="sr-only">Upvote</span>
+        </button>
+        <span class="vote-count">${answer.votes}</span>
+        <button class="vote-button downvote ${answer.user_vote === 'down' ? 'active' : ''}" data-vote="down" data-answer-id="${answer.id}">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 20l8-11H4l8 11z"/>
+            </svg>
+            <span class="sr-only">Downvote</span>
+        </button>
+        ${answer.accepted ? 
+            `<div class="accepted-checkmark" title="This answer has been accepted">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                </svg>
+            </div>` : 
+            (isQuestionAuthor ? 
+                `<button class="accept-button" data-answer-id="${answer.id}" title="Accept this answer">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                    </svg>
+                    <span class="sr-only">Accept</span>
+                </button>` : '')
+        }
+    </div>
+    
+    <div class="answer-content">
+        <div class="answer-body rich-text-content">
+            ${answer.content}
+        </div>
+        
+        <div class="answer-metadata">
+            <div class="answer-actions">
+                <button class="action-button comment-button" data-answer-id="${answer.id}">
+                    <span class="action-icon">💬</span> Comment
+                </button>
+                ${answer.user_id === currentUserId ? 
+                    `<button class="action-button edit-button" data-answer-id="${answer.id}">
+                        <span class="action-icon">✏️</span> Edit
+                    </button>` : ''
+                }
+                ${isAdmin || answer.user_id === currentUserId ? 
+                    `<button class="action-button delete-button" data-answer-id="${answer.id}">
+                        <span class="action-icon">🗑️</span> Delete
+                    </button>` : ''
+                }
+            </div>
+            
+            <div class="user-info">
+                <span class="answer-time">${formatDate(answer.created_at)}</span>
+                <a href="/users/${answer.user_id}" class="user-link">
+                    <img src="${answer.user_avatar || '/assets/images/default-avatar.png'}" alt="${answer.username}" class="user-avatar">
+                    <span class="username">${answer.username}</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="comments-container" id="comments-${answer.id}">
+            ${answer.comments.map(comment => `
+                <div class="comment" data-comment-id="${comment.id}">
+                    <div class="comment-content">${comment.content}</div>
+                    <div class="comment-metadata">
+                        <span class="comment-time">${formatDate(comment.created_at)}</span>
+                        <a href="/users/${comment.user_id}" class="user-link">
+                            <span class="username">${comment.username}</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div class="comment-form-container hidden" id="comment-form-${answer.id}">
+            <form class="comment-form" data-answer-id="${answer.id}">
+                <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-text cancel-comment">Cancel</button>
+                    <button type="submit" class="btn btn-primary submit-comment">Add Comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

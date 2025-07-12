@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Question - StackIt</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+    
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- DOMPurify for sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.0/purify.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Include header -->
+        <div id="header-container"></div>
+        
+        <main class="container">
+            <div class="page-header">
+                <h1>Ask a Question</h1>
+                <p>Get answers from the community by asking a clear, specific question</p>
+            </div>
+            
+            <div class="question-form-container">
+                <form id="question-form">
+                    <div class="form-group">
+                        <label for="question-title">Title</label>
+                        <p class="form-hint">Be specific and imagine you're asking another person</p>
+                        <input 
+                            type="text" 
+                            id="question-title" 
+                            name="title" 
+                            placeholder="e.g. How to implement a JWT authentication system in Flask?"
+                            required
+                            minlength="15"
+                            maxlength="150"
+                        >
+                        <div class="error-message" id="title-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="question-description">Description</label>
+                        <p class="form-hint">Include all the information someone would need to answer your question</p>
+                        
+                        <!-- Quill editor container -->
+                        <div id="question-editor" class="rich-text-editor"></div>
+                        <div class="error-message" id="description-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="question-tags">Tags</label>
+                        <p class="form-hint">Add up to 5 tags to describe what your question is about</p>
+                        <div class="tags-input-container">
+                            <input 
+                                type="text" 
+                                id="tag-input" 
+                                placeholder="e.g. python, flask, authentication"
+                            >
+                            <div id="tags-container" class="tags-container"></div>
+                            <div id="tags-suggestions" class="tags-suggestions"></div>
+                        </div>
+                        <div class="error-message" id="tags-error"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="preview-btn" class="btn btn-secondary">Preview</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary">Post Question</button>
+                    </div>
+                </form>
+                
+                <div id="preview-container" class="preview-container hidden">
+                    <h2>Preview</h2>
+                    <div class="preview-title" id="preview-title"></div>
+                    <div class="preview-content" id="preview-content"></div>
+                    <div class="preview-tags" id="preview-tags"></div>
+                    <button type="button" id="back-to-edit" class="btn btn-secondary">Back to Edit</button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Include footer -->
+        <div id="footer-container"></div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="/assets/js/utils/api.js"></script>
+    <script src="/assets/js/utils/validation.js"></script>
+    <script src="/assets/js/components/rich-editor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header and footer components
+            fetch('/components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header-container').innerHTML = html;
+                });
+                
+            fetch('/components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-container').innerHTML = html;
+                });
+            
+            // Initialize rich text editor
+            const questionEditor = new RichTextEditor('question-editor', 'Describe your question in detail...');
+            
+            // Tags handling
+            const tagsContainer = document.getElementById('tags-container');
+            const tagInput = document.getElementById('tag-input');
+            const tagsError = document.getElementById('tags-error');
+            const selectedTags = [];
+            
+            // Add tag when Enter is pressed
+            tagInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const tagValue = tagInput.value.trim().toLowerCase();
+                    
+                    if (tagValue && !selectedTags.includes(tagValue)) {
+                        if (selectedTags.length >= 5) {
+                            tagsError.textContent = 'Maximum 5 tags allowed';
+                            return;
+                        }
+                        
+                        addTag(tagValue);
+                        tagInput.value = '';
+                        tagsError.textContent = '';
+                    }
+                }
+            });
+            
+            // Function to add a tag
+            function addTag(tagName) {
+                selectedTags.push(tagName);
+                
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `
+                    <span>${tagName}</span>
+                    <button type="button" class="tag-remove" data-tag="${tagName}">×</button>
+                `;
+                tagsContainer.appendChild(tagElement);
+                
+                // Add remove event
+                tagElement.querySelector('.tag-remove').addEventListener('click', function() {
+                    const tagToRemove = this.getAttribute('data-tag');
+                    const index = selectedTags.indexOf(tagToRemove);
+                    if (index !== -1) {
+                        selectedTags.splice(index, 1);
+                    }
+                    tagElement.remove();
+                    tagsError.textContent = '';
+                });
+            }
+            
+            // Preview functionality
+            const previewBtn = document.getElementById('preview-btn');
+            const backToEditBtn = document.getElementById('back-to-edit');
+            const formContainer = document.getElementById('question-form');
+            const previewContainer = document.getElementById('preview-container');
+            
+            previewBtn.addEventListener('click', function() {
+                const title = document.getElementById('question-title').value;
+                const description = questionEditor.getContent();
+                
+                if (!title || questionEditor.isEmpty()) {
+                    alert('Please fill in all required fields before previewing');
+                    return;
+                }
+                
+                document.getElementById('preview-title').textContent = title;
+                document.getElementById('preview-content').innerHTML = DOMPurify.sanitize(description);
+                
+                const tagsHTML = selectedTags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                document.getElementById('preview-tags').innerHTML = tagsHTML;
+                
+                formContainer.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            });
+            
+            backToEditBtn.addEventListener('click', function() {
+                previewContainer.classList.add('hidden');
+                formContainer.classList.remove('hidden');
+            });
+            
+            // Form submission
+            const questionForm = document.getElementById('question-form');
+            
+            questionForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Clear previous errors
+                document.getElementById('title-error').textContent = '';
+                document.getElementById('description-error').textContent = '';
+                document.getElementById('tags-error').textContent = '';
+                
+                // Get form values
+                const title = document.getElementById('question-title').value.trim();
+                const description = questionEditor.getSanitizedContent();
+                
+                // Validate form
+                let hasError = false;
+                
+                if (!title) {
+                    document.getElementById('title-error').textContent = 'Title is required';
+                    hasError = true;
+                } else if (title.length < 15) {
+                    document.getElementById('title-error').textContent = 'Title must be at least 15 characters';
+                    hasError = true;
+                }
+                
+                if (questionEditor.isEmpty()) {
+                    document.getElementById('description-error').textContent = 'Description is required';
+                    hasError = true;
+                }
+                
+                if (selectedTags.length === 0) {
+                    document.getElementById('tags-error').textContent = 'At least one tag is required';
+                    hasError = true;
+                }
+                
+                if (hasError) {
+                    return;
+                }
+                
+                // Prepare data for submission
+                const questionData = {
+                    title: title,
+                    description: description,
+                    tags: selectedTags
+                };
+                
+                try {
+                    // Show loading state
+                    const submitBtn = document.getElementById('submit-btn');
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Posting...';
+                    
+                    // Send to API
+                    const response = await fetch('/api/questions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(questionData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to post question');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Redirect to the new question page
+                    window.location.href = `/question/${result.id}`;
+                } catch (error) {
+                    console.error('Error posting question:', error);
+                    alert('Failed to post question: ' + error.message);
+                } finally {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Post Question';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
