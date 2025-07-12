@@ -5,16 +5,27 @@
 **Member:** Dheeraj Kumar - 231210039@nitdelhi.ac.in
 
 ---
+# Video Demo
 
+**Drive Link:** [View Demo video](https://drive.google.com/file/d/1pA2s7VxEGHbfjZ49oyRXOLGyCFqYAyQB/view?usp=drive_link)
+
+
+
+## System Architecture
+
+<img src="https://github.com/DakshVerma11/Odoo25_NITDominars/blob/main/database.png">
+
+## ER Diagram for SQL database
+
+<img src="https://github.com/DakshVerma11/Odoo25_NITDominars/blob/main/System%20Architexture.png">
+
+https://github.com/DakshVerma11/Odoo25_NITDominars/blob/main/System%20Architexture.png
 ## Problem Statement 2: StackIt – A Minimal Q&A Forum Platform
 
 ### Overview
 
 **StackIt** is a minimal question-and-answer platform that supports collaborative learning and structured knowledge sharing. It’s designed to be simple, user-friendly, and focused on the core experience of asking and answering questions within a community.
 
- <img width="1893" height="871" alt="image" src="https://github.com/user-attachments/assets/47a30415-c731-4d03-b3fd-eb55e9589382" />
-
- <img width="1901" height="862" alt="image" src="https://github.com/user-attachments/assets/0074238e-91c7-461a-9441-650cf62fcbb3" />
 
 
 
@@ -38,7 +49,6 @@ Users can submit a new question using:
 - **Title** – Short and descriptive
 - **Description** – Written using a rich text editor
 
-  <img width="998" height="782" alt="image" src="https://github.com/user-attachments/assets/bb288f98-33a5-476c-aa50-20e2748ddbe4" />
 
 
 ---
@@ -65,7 +75,6 @@ The description editor should support:
 - Hyperlink insertion (URLs)  
 - Image upload  
 - Text alignment – Left, Center, Right
- <img width="930" height="391" alt="image" src="https://github.com/user-attachments/assets/c0c05ab5-ef63-43cf-aed2-18d47c6b0fae" />
 
 
 ---
@@ -83,7 +92,6 @@ The description editor should support:
 - Users can upvote or downvote answers  
 - Question owners can mark one answer as accepted
 
-  <img width="1471" height="309" alt="image" src="https://github.com/user-attachments/assets/3cc7bb0e-943c-4e15-9de0-5262612395ab" />
 
 
 ---
@@ -92,7 +100,6 @@ The description editor should support:
 
 - Questions must include relevant tags  
 - Tags input supports multi-select (e.g., `React`, `JWT`)
-  <img width="1591" height="611" alt="image" src="https://github.com/user-attachments/assets/f36c373e-503c-4ffc-8792-1a364fac71a9" />
 
 
 ---
