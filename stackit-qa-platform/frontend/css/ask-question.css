@@ -238,6 +238,50 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
+        /* Quill Dark Theme Customization */
+.ql-toolbar.ql-snow {
+    background: rgba(15, 15, 35, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px 10px 0 0;
+    color: #ffffff;
+}
+
+.ql-container.ql-snow {
+    background: rgba(15, 15, 35, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 10px 10px;
+    color: #ffffff;
+}
+
+.ql-editor {
+    color: #ffffff;
+    font-size: 1rem;
+    min-height: 200px;
+    padding: 1rem;
+}
+
+.ql-editor::before {
+     color: rgba(255, 255, 255, 0.5) !important;
+    font-style: normal;
+    opacity: 1 !important; 
+}
+
+.ql-snow .ql-picker,
+.ql-snow .ql-stroke {
+    stroke: #fff;
+}
+.ql-snow .ql-fill {
+    fill: #fff;
+}
+.ql-snow .ql-picker-options {
+    background-color: rgba(26, 26, 46, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.ql-snow .ql-picker-item:hover,
+.ql-snow .ql-picker-label:hover {
+    color: #8b5cf6;
+}
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
