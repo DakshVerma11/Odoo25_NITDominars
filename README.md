@@ -38,6 +38,9 @@ Users can submit a new question using:
 - **Title** – Short and descriptive
 - **Description** – Written using a rich text editor
 
+  <img width="998" height="782" alt="image" src="https://github.com/user-attachments/assets/bb288f98-33a5-476c-aa50-20e2748ddbe4" />
+
+
 ---
 
 ### Admin Role
@@ -61,7 +64,9 @@ The description editor should support:
 - Emoji insertion 😊  
 - Hyperlink insertion (URLs)  
 - Image upload  
-- Text alignment – Left, Center, Right  
+- Text alignment – Left, Center, Right
+ <img width="930" height="391" alt="image" src="https://github.com/user-attachments/assets/c0c05ab5-ef63-43cf-aed2-18d47c6b0fae" />
+
 
 ---
 
@@ -76,14 +81,19 @@ The description editor should support:
 ### 4. Voting & Accepting Answers
 
 - Users can upvote or downvote answers  
-- Question owners can mark one answer as accepted  
+- Question owners can mark one answer as accepted
+
+  <img width="1471" height="309" alt="image" src="https://github.com/user-attachments/assets/3cc7bb0e-943c-4e15-9de0-5262612395ab" />
+
 
 ---
 
 ### 5. Tagging
 
 - Questions must include relevant tags  
-- Tags input supports multi-select (e.g., `React`, `JWT`)  
+- Tags input supports multi-select (e.g., `React`, `JWT`)
+  <img width="1591" height="611" alt="image" src="https://github.com/user-attachments/assets/f36c373e-503c-4ffc-8792-1a364fac71a9" />
+
 
 ---
 
