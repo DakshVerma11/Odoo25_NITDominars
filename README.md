@@ -1,8 +1,8 @@
 # Odoo25_NITDominars
 
 **Submission for Odoo Hackathon 2025 by Team NITDominars**  
-**Leader:** Daksh Verma  
-**Member:** Dheeraj
+**Leader:** Daksh Verma  - verma11daksh@gmail.com
+**Member:** Dheeraj - 231210039@nitdelhi.ac.in
 
 ---
 
