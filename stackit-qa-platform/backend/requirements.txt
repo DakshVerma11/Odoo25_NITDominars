@@ -1,0 +1,9 @@
+Flask==2.3.2
+Flask-SQLAlchemy==3.0.5
+Flask-Cors==4.0.0
+PyJWT==2.7.0
+email-validator==2.0.0
+bleach==6.0.0
+Werkzeug==2.3.6
+python-dotenv==1.0.0
+gunicorn==21.2.0
