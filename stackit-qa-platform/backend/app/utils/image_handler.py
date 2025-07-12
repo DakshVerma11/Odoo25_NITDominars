@@ -93,3 +93,10 @@ def optimize_image(file_path, max_width=1200):
         
     except Exception as e:
         current_app.logger.error(f"Image optimization error: {str(e)}")
+
+# Add this function to fix the import error in questions.py
+def save_uploaded_image(file, subfolder="uploads"):
+    """
+    Alias for save_image function to maintain backward compatibility
+    """
+    return save_image(file, subfolder)

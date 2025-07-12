@@ -2,6 +2,7 @@ from flask import request, g, jsonify, abort
 import jwt
 from app.models import User
 from flask import current_app
+from functools import wraps
 
 def register_auth_middleware(app):
     """
@@ -55,3 +56,16 @@ def register_auth_middleware(app):
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             # Continue without authenticated user
             return None
+
+# Add the missing login_required decorator function
+def login_required(f):
+    """
+    Decorator to require authentication for a route.
+    Must be used after the authenticate_request middleware runs.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not g.get('user'):
+            return jsonify({"error": "Authentication required"}), 401
+        return f(*args, **kwargs)
+    return decorated_function

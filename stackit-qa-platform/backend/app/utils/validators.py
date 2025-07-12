@@ -106,3 +106,47 @@ def validate_answer(data):
         errors['question_id'] = 'Question ID is required'
     
     return errors
+
+# Add the missing validate_user_update function
+def validate_user_update(data):
+    """
+    Validate user profile update data
+    """
+    errors = {}
+    
+    # Username validation (optional)
+    if 'username' in data and data['username']:
+        if len(data['username']) < 3:
+            errors['username'] = 'Username must be at least 3 characters'
+        elif len(data['username']) > 50:
+            errors['username'] = 'Username cannot exceed 50 characters'
+        elif not re.match(r'^[a-zA-Z0-9_]+$', data['username']):
+            errors['username'] = 'Username can only contain letters, numbers, and underscores'
+    
+    # Email validation (optional)
+    if 'email' in data and data['email']:
+        try:
+            validate_email(data['email'])
+        except EmailNotValidError:
+            errors['email'] = 'Invalid email format'
+    
+    # Password validation (optional)
+    if 'password' in data and data['password']:
+        if len(data['password']) < 8:
+            errors['password'] = 'Password must be at least 8 characters'
+        elif not re.search(r'[A-Z]', data['password']):
+            errors['password'] = 'Password must contain at least one uppercase letter'
+        elif not re.search(r'[a-z]', data['password']):
+            errors['password'] = 'Password must contain at least one lowercase letter'
+        elif not re.search(r'[0-9]', data['password']):
+            errors['password'] = 'Password must contain at least one number'
+        
+        # Check password confirmation if provided
+        if 'password_confirm' not in data or data['password'] != data['password_confirm']:
+            errors['password_confirm'] = 'Passwords do not match'
+    
+    # Bio validation (optional)
+    if 'bio' in data and data['bio'] and len(data['bio']) > 500:
+        errors['bio'] = 'Bio cannot exceed 500 characters'
+    
+    return errors
